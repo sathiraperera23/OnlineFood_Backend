@@ -1,0 +1,44 @@
+package com.example.Food.service.Impl;
+
+import com.example.Food.entity.Category;
+import com.example.Food.repository.CategoryRepository;
+import com.example.Food.service.CategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class CategoryServiceImpl implements CategoryService {
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Override
+    public Category create(Category category) {
+        return categoryRepository.save(category);
+    }
+
+    @Override
+    public List<Category> getAll() {
+        return categoryRepository.findAll();
+    }
+
+    @Override
+    public Category getById(Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+    }
+
+    @Override
+    public Category update(Long id, Category category) {
+        Category existing = getById(id);
+        existing.setName(category.getName());
+        return categoryRepository.save(existing);
+    }
+
+    @Override
+    public void delete(Long id) {
+        categoryRepository.deleteById(id);
+    }
+}
