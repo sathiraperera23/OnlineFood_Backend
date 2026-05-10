@@ -37,10 +37,8 @@ public class OrderServiceImpl implements OrderService {
         Cart cart = cartRepository.findByUser(user)
                 .orElseThrow(() -> new RuntimeException("Cart is empty"));
 
-        List<CartItem> cartItems = cartItemRepository.findAll()
-                .stream()
-                .filter(i -> i.getCart().getId().equals(cart.getId()))
-                .toList();
+        // ✅ Better: fetch only this cart's items
+        List<CartItem> cartItems = cartItemRepository.findByCart(cart);
 
         if (cartItems.isEmpty()) {
             throw new RuntimeException("Cart is empty");
@@ -62,15 +60,19 @@ public class OrderServiceImpl implements OrderService {
             orderItem.setFoodItem(cartItem.getFoodItem());
             orderItem.setQuantity(cartItem.getQuantity());
 
-            double price = cartItem.getFoodItem().getPrice() * cartItem.getQuantity();
-            orderItem.setPrice(price);
+            double price = cartItem.getFoodItem().getPrice();
+            double itemTotal = price * cartItem.getQuantity();
 
-            total += price;
+            orderItem.setPrice(itemTotal);
+
+            total += itemTotal;
 
             orderItemRepository.save(orderItem);
         }
 
-        savedOrder.setTotal(total);
+        // ✅ FIX HERE
+        savedOrder.setTotalAmount(total);
+
         orderRepository.save(savedOrder);
 
         // clear cart

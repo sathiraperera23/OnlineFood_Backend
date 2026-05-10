@@ -1,5 +1,6 @@
 package com.example.Food;
 
+import com.example.Food.entity.Cart;
 import com.example.Food.entity.User;
 import com.example.Food.repository.UserRepository;
 import com.example.Food.security.JwtUtil;
@@ -23,15 +24,42 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
+//    @PostMapping("/register")
+//    public String register(@RequestBody User user) {
+//
+//        user.setPassword(passwordEncoder.encode(user.getPassword()));
+//
+//        userRepository.save(user);
+//
+//        return "User registered successfully";
+//    }
+
     @PostMapping("/register")
     public String register(@RequestBody User user) {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
+        Cart cart = new Cart();
+        cart.setUser(user);
+        user.setCart(cart);
+
         userRepository.save(user);
 
         return "User registered successfully";
     }
+
+//    @PostMapping("/login")
+//    public String login(@RequestBody User user) {
+//
+//        User dbUser = userRepository.findByUsername(user.getUsername())
+//                .orElseThrow(() -> new RuntimeException("User not found"));
+//
+//        if (passwordEncoder.matches(user.getPassword(), dbUser.getPassword())) {
+//            return jwtUtil.generateToken(user.getUsername());
+//        }
+//
+//        throw new RuntimeException("Invalid credentials");
+//    }
 
     @PostMapping("/login")
     public String login(@RequestBody User user) {
@@ -40,7 +68,7 @@ public class AuthController {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (passwordEncoder.matches(user.getPassword(), dbUser.getPassword())) {
-            return jwtUtil.generateToken(user.getUsername());
+            return jwtUtil.generateToken(dbUser.getUsername());
         }
 
         throw new RuntimeException("Invalid credentials");

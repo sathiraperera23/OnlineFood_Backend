@@ -4,6 +4,8 @@ import com.example.Food.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @Table(name = "orders")
@@ -21,4 +23,8 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    private LocalDateTime createdAt;
+
+
 }

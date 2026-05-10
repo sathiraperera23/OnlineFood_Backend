@@ -4,6 +4,8 @@ import com.example.Food.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 public class Payment {
@@ -18,4 +20,7 @@ public class Payment {
     @OneToOne
     @JoinColumn(name = "order_id")
     private Order order;
+
+    // ✅ ADD THIS
+    private LocalDateTime createdAt;
 }

@@ -13,6 +13,8 @@ public class OrderItem {
 
     private Integer quantity;
 
+    private Double price; // ✅ ADD THIS
+
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
